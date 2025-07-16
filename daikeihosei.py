@@ -7,7 +7,7 @@ import os
 clicked_points = []
 img = None  # グローバル変数として宣言
 img_copy = None
-output_folder = "73"  # 出力フォルダ
+output_folder = "127"  # 出力フォルダ
 folder = "a"
 
 
