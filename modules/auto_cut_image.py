@@ -2,7 +2,7 @@ import cv2
 import numpy as np
 import os
 
-# Sắp xếp các điểm theo thứ tự: trái trên, phải trên, trái dưới, phải dưới
+# 頂点を左上、右上、左下、右下の順にソートする関数
 def sort_vertices(vertices):
     sum_coords = vertices.sum(axis=1)
     diff_coords = np.diff(vertices, axis=1)
@@ -14,7 +14,7 @@ def sort_vertices(vertices):
 
     return np.array([top_left, top_right, bottom_left, bottom_right], dtype=np.float32)
 
-# Tự động phát hiện vùng tứ giác và cắt hiệu chỉnh
+# 四角形領域を自動検出して補正する関数
 def detect_and_correct(img, save_path):
     gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
     blurred = cv2.GaussianBlur(gray, (5, 5), 0)
@@ -31,7 +31,7 @@ def detect_and_correct(img, save_path):
             doc_cnt = approx
             break
     else:
-        print("❌ Không tìm thấy hình tứ giác.")
+        print("❌ 四角形が見つかりませんでした。")
         return
 
     pts = doc_cnt.reshape(4, 2)
@@ -56,12 +56,14 @@ def detect_and_correct(img, save_path):
     warped = cv2.warpPerspective(img, M, (maxWidth, maxHeight))
 
     cv2.imwrite(save_path, warped)
-    print(f"✅ Đã lưu ảnh hiệu chỉnh: {save_path}")
+    print(f"✅ 補正画像を保存しました: {save_path}")
 
-# Xử lý toàn bộ ảnh trong thư mục
+# フォルダ内の全画像を処理する関数
 def process_all_images(output_folder):
-    input_dir = f"number/{output_folder}"
-    output_dir = f"good1/{output_folder}"
+    # input_dir = f"data/number/{output_folder}"
+    input_dir = r"D:\test01_testFilesWithIndividualFunctions\data\number\73"
+
+    output_dir = f"data/plates_after_cut/{output_folder}"
     if not os.path.exists(output_dir):
         os.makedirs(output_dir)
 
@@ -73,12 +75,12 @@ def process_all_images(output_folder):
 
         img = cv2.imread(input_path)
         if img is None:
-            print(f"⚠️ Không thể đọc ảnh: {input_path}")
+            print(f"⚠️ 画像を読み込めませんでした: {input_path}")
             continue
 
-        print(f"📷 Đang xử lý: {filename}")
+        print(f"📷 処理中: {filename}")
         detect_and_correct(img, save_path)
 
-# Chạy chương trình chính
+# メイン処理
 if __name__ == "__main__":
-    process_all_images()
+    process_all_images('73')    
