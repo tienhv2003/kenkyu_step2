@@ -5,9 +5,10 @@ from modules.super_resolution import superres_images_in_folder  # 超解像処�
 
 output_folder = "73"  # または任意の値
 
-input_folder = f"data/number/{output_folder}"
-mid_folder = f"data/plates_after_cut/{output_folder}"
-output_folder_superres = f"data/plates_after_cut_super_resolution/{output_folder}"
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+input_folder = os.path.join(BASE_DIR, f"data/number/{output_folder}")
+mid_folder = os.path.join(BASE_DIR, f"data/plates_after_cut/{output_folder}")
+output_folder_superres = os.path.join(BASE_DIR, f"data/plates_after_cut_super_resolution/{output_folder}")
 
 # ステップ1: Cannyによる自動切り出し（good1/...に画像がなければ実行）
 if not os.path.exists(mid_folder) or len(os.listdir(mid_folder)) == 0:

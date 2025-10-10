@@ -32,7 +32,7 @@ def detect_and_correct(img, save_path):
             break
     else:
         print("❌ 四角形が見つかりませんでした。")
-        return
+        return False
 
     pts = doc_cnt.reshape(4, 2)
     sorted_pts = sort_vertices(pts)
@@ -57,21 +57,23 @@ def detect_and_correct(img, save_path):
 
     cv2.imwrite(save_path, warped)
     print(f"✅ 補正画像を保存しました: {save_path}")
+    return True
 
 # フォルダ内の全画像を処理する関数
 def process_all_images(output_folder):
-    # input_dir = f"data/number/{output_folder}"
-    input_dir = r"D:\test01_testFilesWithIndividualFunctions\data\number\73"
+    input_dir = f"data/number/{output_folder}"
 
     output_dir = f"data/plates_after_cut/{output_folder}"
     if not os.path.exists(output_dir):
         os.makedirs(output_dir)
 
     files = [f for f in os.listdir(input_dir) if f.lower().endswith(('.jpg', '.jpeg', '.png'))]
+    total_inputs = len(files)
+    cut_count = 0
 
     for idx, filename in enumerate(files, start=1):
         input_path = os.path.join(input_dir, filename)
-        save_path = os.path.join(output_dir, f"{output_folder}_auto_{idx}.jpg")
+        save_path = os.path.join(output_dir, filename)
 
         img = cv2.imread(input_path)
         if img is None:
@@ -79,7 +81,11 @@ def process_all_images(output_folder):
             continue
 
         print(f"📷 処理中: {filename}")
-        detect_and_correct(img, save_path)
+        success = detect_and_correct(img, save_path)
+        if success:
+            cut_count += 1
+
+    print(f"📊 Kết quả cắt ảnh: {cut_count}/{total_inputs} ảnh được lưu thành công")
 
 # メイン処理
 if __name__ == "__main__":

@@ -3,11 +3,14 @@ import cv2.dnn_superres
 import numpy as np
 import os
 
+BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+MODEL_PATH = os.path.join(BASE_DIR, "models", "super_resolution", "FSRCNN_x4.pb")
+
 #AIモデルの読み込み
 model_FSRCNN = cv2.dnn_superres.DnnSuperResImpl_create()
 
 #モデルの設定
-model_FSRCNN.readModel("models/super_resolution/FSRCNN_x4.pb")
+model_FSRCNN.readModel(MODEL_PATH)
 model_FSRCNN.setModel("fsrcnn", 4)
 
 #画像フォルダ内のすべての画像を処理する関数
