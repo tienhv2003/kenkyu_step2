@@ -1,7 +1,7 @@
 import os
 import cv2
 from modules.auto_cut_image import process_all_images  # 自動切り出し
-from modules.super_resolution import superres_images_in_folder  # 超解像処理
+from modules.super_resolution import super_resolution_and_contrast_images_in_folder  # 超解像＋コントラスト処理
 
 output_folder = "73"  # または任意の値
 
@@ -21,4 +21,4 @@ else:
 if not os.path.exists(output_folder_superres):
     os.makedirs(output_folder_superres)
 
-superres_images_in_folder(mid_folder, output_folder_superres)
+super_resolution_and_contrast_images_in_folder(mid_folder, output_folder_superres)

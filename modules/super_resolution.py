@@ -13,8 +13,8 @@ model_FSRCNN = cv2.dnn_superres.DnnSuperResImpl_create()
 model_FSRCNN.readModel(MODEL_PATH)
 model_FSRCNN.setModel("fsrcnn", 4)
 
-#画像フォルダ内のすべての画像を処理する関数
-def superres_images_in_folder(input_folder, output_folder):
+# 画像フォルダ内のすべての画像に対して「超解像＋コントラスト強調」を行う関数
+def super_resolution_and_contrast_images_in_folder(input_folder, output_folder):
     if not os.path.exists(output_folder):
         os.makedirs(output_folder)
 
@@ -28,9 +28,17 @@ def superres_images_in_folder(input_folder, output_folder):
             continue
         
         upscaled_img = model_FSRCNN.upsample(img)
-        
-        cv2.imwrite(output_path, upscaled_img)
-        print(f"超解像画像を保存しました: {output_path}")
+
+        # Convert to grayscale and enhance contrast using CLAHE
+        gray_img = cv2.cvtColor(upscaled_img, cv2.COLOR_BGR2GRAY)
+        clahe = cv2.createCLAHE(clipLimit=2.0, tileGridSize=(8, 8))
+        enhanced_img = clahe.apply(gray_img)
+
+        # Add white border to stabilize downstream feature extraction
+        padded = cv2.copyMakeBorder(enhanced_img, 30, 30, 30, 30, cv2.BORDER_CONSTANT, value=255)
+
+        cv2.imwrite(output_path, padded)
+        print(f"超解像＋前処理（グレースケール・コントラスト強調＋余白追加）画像を保存しました: {output_path}")
 
 
 
